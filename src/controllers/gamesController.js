@@ -8,9 +8,9 @@ export const getGames = async (req, res) => {
       const filteredGamesByName = await connectionDB.query(
         `SELECT games.* , categories.name AS "categoryName"
          FROM games 
-         WHERE  name ILIKE  $1 || '%'
          JOIN categories
          ON games."categoryId" = categories.id
+         WHERE  games.name ILIKE  $1 || '%'
          `,
         [name]
       );
