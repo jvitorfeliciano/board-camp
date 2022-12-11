@@ -18,7 +18,7 @@ export const getGames = async (req, res) => {
       return res.send(filteredGamesByName.rows);
     } else {
       const allGames = await connectionDB.query(
-        `SELECT games.* , categories.name AS categoryName
+        `SELECT games.* , categories.name AS "categoryName"
          FROM games 
          JOIN categories
          ON games."categoryId" = categories.id
