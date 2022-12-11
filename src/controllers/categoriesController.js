@@ -9,4 +9,14 @@ export const getCategories = async (req, res) => {
   }
 };
 
-
+export const postCategory = async (req, res) => {
+  const name = res.locals.name;
+  try {
+    await connectionDB.query(`INSERT INTO categories (name) VALUES ($1)`, [
+      name,
+    ]);
+    res.sendStatus(201);
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+};
