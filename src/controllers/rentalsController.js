@@ -101,3 +101,49 @@ export const postRental = async (req, res) => {
     return res.status(500).send({ message: err.message });
   }
 };
+
+export const finishRental = async (req, res) => {
+  const { id } = req.params;
+
+  const returnDate = new Date().toLocaleDateString("pt-br");
+
+  try {
+    const rental = await connectionDB.query(
+      `SELECT 
+          rentals.*, now()::date - rentals."rentDate" as  "daysApart", games."pricePerDay" 
+        FROM rentals
+        JOIN games
+        ON rentals."gameId" = games.id    
+        WHERE rentals.id=$1`,
+      [id]
+    );
+
+    const daysApart = rental.rows[0].daysApart;
+    const daysRented = rental.rows[0].daysRented;
+    const pricePerDay = rental.rows[0].pricePerDay;
+
+    if (daysApart > daysRented) {
+      const outdatedDays = daysApart - daysRented;
+      const delayFee = outdatedDays * pricePerDay;
+      await connectionDB.query(
+        `UPDATE rentals 
+           SET "returnDate"=$1, "delayFee"=$2
+           WHERE id=$3
+               `,
+        [returnDate, delayFee, id]
+      );
+    } else {
+      await connectionDB.query(
+        `UPDATE rentals 
+           SET "returnDate"=$1
+           WHERE id=$2
+            `,
+        [returnDate, id]
+      );
+    }
+
+    return res.sendStatus(200);
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
+};

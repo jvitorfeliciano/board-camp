@@ -69,20 +69,30 @@ export const rentalConditionsValidation = async (req, res, next) => {
 };
 
 export const rentalExistenceValidation = async (req, res, next) => {
-    const { id } = req.params;
-   console.log(id)
-    try {
-      const rental = await connectionDB.query(
-        `SELECT * FROM rentals WHERE id=$1`,
-        [id]
-      );
-  
-      if (rental.rowCount === 0) {
-        return res.status(404).send({ message: "Rental not found" });
-      }
-      res.locals.rental = rental;
-    } catch (err) {
-      return res.status(500).send({ message: err.message });
+  const { id } = req.params;
+  console.log(id);
+  try {
+    const rental = await connectionDB.query(
+      `SELECT * FROM rentals WHERE id=$1`,
+      [id]
+    );
+
+    if (rental.rowCount === 0) {
+      return res.status(404).send({ message: "Rental not found" });
     }
-    next();
-  };
+    res.locals.rental = rental;
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
+  next();
+};
+
+export const validationOfconditionsToFinishRental = (req, res, next) => {
+  const rental = res.locals.rental;
+  const returnDate = rental.rows[0].returnDate;
+
+  if (returnDate) {
+    return res.status(400).send({ message: "Rental already finished" });
+  }
+  next();
+};
