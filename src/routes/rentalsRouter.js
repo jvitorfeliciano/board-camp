@@ -4,6 +4,7 @@ import {
   rentalConditionsValidation,
   rentalExistenceValidation,
   rentalSchemaValidation,
+  validationOfconditionsToDeleteRental,
   validationOfconditionsToFinishRental,
 } from "../middlewares/rentalsMiddleware.js";
 
@@ -22,4 +23,10 @@ rentalsRouter.post(
     validationOfconditionsToFinishRental,
     finishRental
   );
+  rentalsRouter.delete(
+    "/rentals/:id",
+    rentalExistenceValidation,
+    validationOfconditionsToDeleteRental
+  );
+  
 export default rentalsRouter;

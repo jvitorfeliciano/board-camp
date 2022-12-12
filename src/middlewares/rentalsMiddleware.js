@@ -96,3 +96,13 @@ export const validationOfconditionsToFinishRental = (req, res, next) => {
   }
   next();
 };
+
+export const validationOfconditionsToDeleteRental = (req, res, next) => {
+  const rental = res.locals.rental;
+  const returnDate = rental.rows[0].returnDate;
+
+  if (!returnDate) {
+    return res.status(400).send({ message: "Rental not finished" });
+  }
+  next();
+};
