@@ -38,3 +38,19 @@ export const getCustomerById = async (req, res) => {
     return res.status(500).send({ message: err.message });
   }
 };
+
+export const postCustomer = async (req, res) => {
+  const { name, phone, cpf, birthday } = res.locals.customerInformations;
+
+  try {
+    await connectionDB.query(
+      ` INSERT INTO  customers (name, phone, cpf, birthday)
+        VALUES ($1, $2,$3,$4)
+       `,
+      [name, phone, cpf, birthday]
+    );
+    return res.sendStatus(201);
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
+};

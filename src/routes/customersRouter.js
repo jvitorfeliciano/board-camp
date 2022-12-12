@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   getCustomerById,
   getCustomers,
+  postCustomer,
 } from "../controllers/customersController.js";
 import {
  
@@ -17,5 +18,5 @@ customersRouter.get(
   customerExistenceValidation,
   getCustomerById
 );
-customersRouter.post("/customers", customerSchemaValidation, cpfExistenceValidation);
+customersRouter.post("/customers", customerSchemaValidation, cpfExistenceValidation, postCustomer);
 export default customersRouter;
