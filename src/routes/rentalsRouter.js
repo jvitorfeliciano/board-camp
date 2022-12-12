@@ -2,6 +2,7 @@ import { Router } from "express";
 import { getRentals, postRental } from "../controllers/rentalsController.js";
 import {
   rentalConditionsValidation,
+  rentalExistenceValidation,
   rentalSchemaValidation,
 } from "../middlewares/rentalsMiddleware.js";
 
@@ -14,5 +15,8 @@ rentalsRouter.post(
   rentalConditionsValidation,
   postRental
 );
-
+rentalsRouter.post(
+    "/rentals/:id/return",
+    rentalExistenceValidation,
+  );
 export default rentalsRouter;

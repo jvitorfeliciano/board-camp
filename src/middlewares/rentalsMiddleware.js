@@ -67,3 +67,22 @@ export const rentalConditionsValidation = async (req, res, next) => {
   }
   next();
 };
+
+export const rentalExistenceValidation = async (req, res, next) => {
+    const { id } = req.params;
+   console.log(id)
+    try {
+      const rental = await connectionDB.query(
+        `SELECT * FROM rentals WHERE id=$1`,
+        [id]
+      );
+  
+      if (rental.rowCount === 0) {
+        return res.status(404).send({ message: "Rental not found" });
+      }
+      res.locals.rental = rental;
+    } catch (err) {
+      return res.status(500).send({ message: err.message });
+    }
+    next();
+  };
