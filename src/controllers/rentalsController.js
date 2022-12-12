@@ -147,3 +147,14 @@ export const finishRental = async (req, res) => {
     return res.status(500).send({ message: err.message });
   }
 };
+
+export const deleteRental = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    await connectionDB.query(`DELETE FROM rentals WHERE id=$1`, [id]);
+    return res.sendStatus(200);
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
+};

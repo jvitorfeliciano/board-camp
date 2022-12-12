@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { finishRental, getRentals, postRental } from "../controllers/rentalsController.js";
+import {
+  deleteRental,
+  finishRental,
+  getRentals,
+  postRental,
+} from "../controllers/rentalsController.js";
 import {
   rentalConditionsValidation,
   rentalExistenceValidation,
@@ -10,7 +15,7 @@ import {
 
 const rentalsRouter = Router();
 
-rentalsRouter.get("/rentals",getRentals);
+rentalsRouter.get("/rentals", getRentals);
 rentalsRouter.post(
   "/rentals",
   rentalSchemaValidation,
@@ -18,15 +23,16 @@ rentalsRouter.post(
   postRental
 );
 rentalsRouter.post(
-    "/rentals/:id/return",
-    rentalExistenceValidation,
-    validationOfconditionsToFinishRental,
-    finishRental
-  );
-  rentalsRouter.delete(
-    "/rentals/:id",
-    rentalExistenceValidation,
-    validationOfconditionsToDeleteRental
-  );
-  
+  "/rentals/:id/return",
+  rentalExistenceValidation,
+  validationOfconditionsToFinishRental,
+  finishRental
+);
+rentalsRouter.delete(
+  "/rentals/:id",
+  rentalExistenceValidation,
+  validationOfconditionsToDeleteRental,
+  deleteRental
+);
+
 export default rentalsRouter;
