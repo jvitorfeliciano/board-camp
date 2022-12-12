@@ -14,11 +14,11 @@ export const getCustomers = async (req, res) => {
       );
       res.send(customersFilteredByCpf.rows);
     } else {
-      const allCustomers = await connectionDB.query(`SELECT * FROM CUSTOMERS`);
+      const allCustomers = await connectionDB.query(`SELECT * FROM customers`);
       res.send(allCustomers.rows);
     }
   } catch (err) {
-    return res.status(500).send({ message: "Server error" });
+    return res.status(500).send({ message: err.message });
   }
 };
 
