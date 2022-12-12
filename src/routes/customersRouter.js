@@ -5,6 +5,7 @@ import {
 } from "../controllers/customersController.js";
 import {
  
+    cpfExistenceValidation,
   customerExistenceValidation, customerSchemaValidation,
 } from "../middlewares/customersMiddleware.js";
 
@@ -16,5 +17,5 @@ customersRouter.get(
   customerExistenceValidation,
   getCustomerById
 );
-customersRouter.post("/customers", customerSchemaValidation);
+customersRouter.post("/customers", customerSchemaValidation, cpfExistenceValidation);
 export default customersRouter;

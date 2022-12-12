@@ -36,3 +36,40 @@ export const customerSchemaValidation = async (req, res, next) => {
   res.locals.customerInformations = customerInformations;
   next();
 };
+
+export const cpfExistenceValidation = async (req, res, next) => {
+  const { id } = req.params;
+  const customerInformations = res.locals.customerInformations;
+  const baseQuery = `SELECT *
+                     FROM customers
+                     WHERE cpf=$1
+                                 `;
+  function query(customerId) {
+    if (customerId) {
+      return baseQuery + `AND id <> $2`;
+    } else {
+      return baseQuery;
+    }
+  }
+
+  function dataArray(customerId) {
+    if (customerId) {
+      return [customerInformations.cpf, id];
+    } else {
+      return [customerInformations.cpf];
+    }
+  }
+
+  try {
+    const { rowCount } = await connectionDB.query(query(id), dataArray(id));
+    console.log(id, rowCount);
+    if (rowCount > 0) {
+      return res
+        .status(409)
+        .send({ message: "This customer is already registered" });
+    }
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
+  next();
+};
