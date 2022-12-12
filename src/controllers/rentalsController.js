@@ -148,7 +148,7 @@ export const finishRental = async (req, res) => {
   }
 };
 
-export const deleteRental = async (req, res, next) => {
+export const deleteRental = async (req, res) => {
   const { id } = req.params;
 
   try {

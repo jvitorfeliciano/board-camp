@@ -47,20 +47,19 @@ export const rentalConditionsValidation = async (req, res, next) => {
 
     res.locals.gameInformations = game.rows[0];
 
-    const { rowCount } = await connectionDB.query(
+    const {rowCount} = await connectionDB.query(
       `SELECT *
        FROM rentals
-       WHERE "gameId" = $1
-       AND "returnDate" <> null
+       WHERE  "gameId" = $1 AND "returnDate" IS NULL
               `,
-      [rentalInformations.gameId]
+      [ rentalInformations.gameId]
     );
-
+      console.log(rowCount); 
     const { stockTotal } = game.rows[0];
     const numberOfRentedGames = rowCount;
 
-    if (numberOfRentedGames === stockTotal) {
-      return res.status(400).send({ message: "These games are all rented" });
+    if (numberOfRentedGames >= stockTotal) {
+      return res.status(400).send({ message: "This is game is not available" });
     }
   } catch (err) {
     return res.status(500).send({ message: err.message });
