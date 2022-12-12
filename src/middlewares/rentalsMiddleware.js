@@ -1,3 +1,4 @@
+import connectionDB from "../db/db.js";
 import rentalSchema from "../models/rentalSchema.js";
 
 export const rentalSchemaValidation = async (req, res, next) => {
@@ -14,4 +15,54 @@ export const rentalSchemaValidation = async (req, res, next) => {
 
   res.locals.rentalInformations = rentalInformations;
   next();
+};
+
+export const rentalConditionsValidation = async (req, res, next) => {
+  const rentalInformations = res.locals.rentalInformations;
+
+  try {
+    const customer = await connectionDB.query(
+      `SELECT *
+       FROM customers
+       WHERE id = $1
+            `,
+      [rentalInformations.customerId]
+    );
+
+    if (customer.rowCount === 0) {
+      return res.status(400).send({ message: "Customer not found" });
+    }
+
+    const game = await connectionDB.query(
+      `SELECT *
+       FROM games
+       WHERE id = $1
+              `,
+      [rentalInformations.gameId]
+    );
+
+    if (game.rowCount === 0) {
+      return res.status(400).send({ message: "Game not found" });
+    }
+
+    res.locals.gameInformations = game.rows[0];
+
+    const { rowCount } = await connectionDB.query(
+      `SELECT *
+       FROM rentals
+       WHERE "gameId" = $1
+       AND "returnDate" <> null
+              `,
+      [rentalInformations.gameId]
+    );
+
+    const { stockTotal } = game.rows[0];
+    const numberOfRentedGames = rowCount;
+
+    if (numberOfRentedGames === stockTotal) {
+      return res.status(400).send({ message: "These games are all rented" });
+    }
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
 };
