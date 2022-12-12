@@ -1,4 +1,5 @@
 import connectionDB from "../db/db.js";
+import dayjs from "dayjs";
 
 export const getRentals = async (req, res) => {
   const { customerId, gameId } = req.query;
@@ -39,7 +40,7 @@ export const getRentals = async (req, res) => {
       query(customerId, gameId),
       dataArray(customerId, gameId)
     );
-    console.log(rentals.rows);
+
     const formattedRentals = rentals.rows.map((rentals) => {
       return {
         id: rentals.id,
@@ -72,7 +73,7 @@ export const postRental = async (req, res) => {
   const { customerId, gameId, daysRented } = res.locals.rentalInformations;
   const { pricePerDay } = res.locals.gameInformations;
 
-  const rentDate = new Date().toLocaleDateString("pt-br");
+  const rentDate = dayjs().format("YYYY/MM/DD");
 
   const originalPrice = pricePerDay * daysRented;
   const returnDate = null;
@@ -105,7 +106,7 @@ export const postRental = async (req, res) => {
 export const finishRental = async (req, res) => {
   const { id } = req.params;
 
-  const returnDate = new Date().toLocaleDateString("pt-br");
+  const returnDate = dayjs().format("YYYY/MM/DD");
 
   try {
     const rental = await connectionDB.query(

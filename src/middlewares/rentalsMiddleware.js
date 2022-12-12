@@ -54,7 +54,7 @@ export const rentalConditionsValidation = async (req, res, next) => {
               `,
       [ rentalInformations.gameId]
     );
-      console.log(rowCount); 
+ 
     const { stockTotal } = game.rows[0];
     const numberOfRentedGames = rowCount;
 
@@ -69,7 +69,7 @@ export const rentalConditionsValidation = async (req, res, next) => {
 
 export const rentalExistenceValidation = async (req, res, next) => {
   const { id } = req.params;
-  console.log(id);
+
   try {
     const rental = await connectionDB.query(
       `SELECT * FROM rentals WHERE id=$1`,
