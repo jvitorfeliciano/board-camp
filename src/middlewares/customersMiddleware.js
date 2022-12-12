@@ -2,7 +2,7 @@ import connectionDB from "../db/db.js";
 import customerSchema from "../models/customerSchema.js";
 
 export const customerExistenceValidation = async (req, res, next) => {
-  const id = Number(req.params.id);
+  const { id } = req.params;
 
   try {
     const customer = await connectionDB.query(
@@ -12,6 +12,7 @@ export const customerExistenceValidation = async (req, res, next) => {
       `,
       [id]
     );
+    
     if (customer.rowCount === 0) {
       return res.status(404).send({ message: "Customer not found" });
     }

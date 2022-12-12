@@ -3,11 +3,12 @@ import {
   getCustomerById,
   getCustomers,
   postCustomer,
+  updateCostumer,
 } from "../controllers/customersController.js";
 import {
- 
-    cpfExistenceValidation,
-  customerExistenceValidation, customerSchemaValidation,
+  cpfExistenceValidation,
+  customerExistenceValidation,
+  customerSchemaValidation,
 } from "../middlewares/customersMiddleware.js";
 
 const customersRouter = Router();
@@ -18,5 +19,17 @@ customersRouter.get(
   customerExistenceValidation,
   getCustomerById
 );
-customersRouter.post("/customers", customerSchemaValidation, cpfExistenceValidation, postCustomer);
+customersRouter.post(
+  "/customers",
+  customerSchemaValidation,
+  cpfExistenceValidation,
+  postCustomer
+);
+customersRouter.put(
+  "/customers/:id",
+  customerExistenceValidation,
+  customerSchemaValidation,
+  cpfExistenceValidation,
+  updateCostumer
+);
 export default customersRouter;

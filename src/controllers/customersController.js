@@ -54,3 +54,21 @@ export const postCustomer = async (req, res) => {
     return res.status(500).send({ message: err.message });
   }
 };
+
+export const updateCostumer = async (req, res) => {
+  const { name, phone, cpf, birthday } = res.locals.customerInformations;
+  const id = Number(req.params.id);
+
+  try {
+    await connectionDB.query(
+      `UPDATE customers  
+       SET name=$1, phone=$2, cpf=$3, birthday=$4
+       WHERE id=$5
+           `,
+      [name, phone, cpf, birthday, id]
+    );
+    return res.sendStatus(201);
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
+};
